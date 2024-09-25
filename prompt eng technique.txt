@@ -1,0 +1,11 @@
+task -> mandatory
+context -> important
+exemplar -> important
+persona -> nice to have
+format -> nice to have
+tone -> nice to have
+priming prompt
+perspective prompt   
+chain of thought prompting 
+-----------------
+Chatgpt and MRS.G -> Mid-journey, Re-run, Suma, Gamma

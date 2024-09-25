@@ -1,0 +1,34 @@
+
+services:
+  web:
+    build:
+      context: .
+    ports:
+      - 3000:3000
+    develop:
+      watch:
+      - path: ./package.json
+        action: rebuild
+      - path: ./package-lock.json
+        action: rebuild
+      - path: ./next.config.js
+        action: rebuild
+      - path: ./
+        target: /app
+        action: sync
+
+# Default Behavior vs. Explicit Definition:
+
+# 1st snippet:
+# build:
+#     context: .
+
+# 2nd snippet
+# build:
+#     context: .
+#     dockerfile: DockerFile
+
+# The first snippet relies on Docker's default behavior to find a file named Dockerfile in the specified context.
+# The second snippet explicitly tells Docker which file to use as the Dockerfile, which is useful if the Dockerfile has a non-standard name or is located elsewhere.
+
+# it depend on us we can both ways , agar toh humna docker file ka name kuch or rakha hai so then we should tell docker explicitly otherwise working with default is also fine.

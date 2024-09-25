@@ -1,0 +1,12 @@
+packages:
+1-speechrecognition pyaudio (using pip)
+Speech recognition in Python is about converting spoken words into text using a computer program. Python has several packages that make this process easier, with one of the most popular being the SpeechRecognition library.
+
+2- setuptools (using pip)
+Setuptools is a Python package that helps you package and distribute your Python projects. Imagine you’ve written some Python code that you want to share with others, or maybe you want to make it easy for others (or yourself) to install your code on different computers. iss package ka through hum apna project ko pip pa be publish krsktay hain so that everyone can access it.
+
+3- webbrowser (built-in module)
+The webbrowser package in Python is a simple tool that allows you to open a web browser from your Python program. You can use it to automatically open a specific website or web page by providing the URL. It's handy for tasks like directing users to a particular site or automating web-related processes.
+
+4- pyttsx3 (using pip)
+Pyttsx3 is a Python package that allows your program to convert text to speech. It’s useful when you want your program to read out loud what’s written, like reading text from a document or speaking the result of a computation.

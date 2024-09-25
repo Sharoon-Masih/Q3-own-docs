@@ -1,0 +1,11 @@
+* pip freeze (command)-> basic jo yeh command hai, yeh jis be currrent may execute kreinga uskay saray packages return krta hai along with the version. 
+
+* agr hum chahtay hain kay jitnay be packages abi current environment may hain wo saray ek 'txt' file may store krdein. so for that we will write this command:
+'pip freeze > filename'
+like: pip freeze > allPackages.txt
+
+* ab ek txt file create hogyi which is named as allPackages.txt
+
+* ab agr hum chahtay hain let say wo file create hui hai wo kisi or developer ko bhejay or agr wobi apnay system may same environment create krna hai toh uss file ka through automatically hojaye toh uska liya simply we will write:
+pip install -r allPackages.txt
+

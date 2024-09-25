@@ -1,0 +1,12 @@
+
+services: # basically 'services' is top-level key in Docker Compose file. in other word we can also say it 'container'. so this line is use to define or configure container/service.
+  web: # This define a service name like here we set 'web'.
+    build: # yeh basically how Image will build for 'web' service/container.
+      context: . # here we have to define the context of Dockerfile that where dockerfile exist. as it is in the current directory therefore put '.'
+    # environment: # as we dont have used any environment variable therefore we want to specify while building Docker Image.
+    #   NODE_ENV: production
+    ports: #here we are doing port mapping.
+      - 5173:5173
+    volumes: # here defining Volume mounts
+      - .:/app # this means jo current working directory hai on local machine wo container may jo WORKDIR hai usme mount hojyegi. 
+      - /app/node_modules # yeh iss lia kia hai bcuz jo current working directory mount hogi container may toh usme be node_modules ka folder hoga which is empty bcuz humnay dockerignore may node_modules ko ignore kr rhay hain. toh iss lia asa na hokay empty folder overwrite krdey isi lia isko persist rakhnay ka lia volume create krdia.

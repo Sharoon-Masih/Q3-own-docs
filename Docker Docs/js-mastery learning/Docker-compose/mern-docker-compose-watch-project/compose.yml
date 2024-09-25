@@ -1,0 +1,112 @@
+# specify the version of docker-compose
+version: "3.8"  # it is simply version of Docker-compose, if we want latest we can put it here.
+
+# define the services/containers to be run, basically yeh jo services ki command hai iska mtlb hai kay jitnay be 'containers' iss application may run hongay that should be define under this command.
+services:
+  # define the frontend service
+  # we can use any name for the service. A standard naming convention is to use "web" for the frontend
+  # basic this 'web' is a container which we have named as 'web'
+  web:
+    # we use depends_on to specify that service depends on another service
+    # in this case, we specify that the web depends on the api service
+    # this means that the api service will be started before the web service
+    # basically jitna be data frontend pa ayega wo 'backend api', therefore we want kay jo 'api' service/container hai wo start hojaye 'web' service say pehlay and remember 'depends_on' ka mtlb hi yeh haka next jo sara code hai wo iss service pa depend krta hai toh pehlay isko run kro. 
+    depends_on: 
+      - api
+    # specify the build context for the web service
+    # simply, this is the directory where the Dockerfile for the web service is located.
+    # 'build' command will build the Docker image, so therefore we have to tell that at which directory or path does dockerfie exist. 
+    build: ./frontend
+
+    # specify the ports to expose for the web service
+    # the first number is the port on the host machine
+    # the second number is the port inside the container
+    # here we doing port mapping, telling host machine that when user access localhost:5163 so you should send the request jo 'web' container/service.                                                                  
+    ports:
+      - 5173:5173
+    # specify the environment variables for the web service
+    # these environment variables will be available inside the container.
+    # so here's a question that traditionally to hum '.env' ki file ma variable ko set krkay and codebase may just access krtay hain, but yaha par toh hum direct value pass kr rhay hain.So basically yaha be hum '.env' set krkay or yaha par access krsktay hain, but uski zarorat nhi hai bcuz yeh jo 'compose.yml' ki file hai yeh srf container may isolated hai or within container be yehi mechanism hai kay waha 'app' may directly value nhi pass hogi blkay just variable name access hoga, isi lia agr incase koi container pa attack be krta hai toh it cant find the value of env variables. for more check notes of this project. 
+    environment:
+      VITE_API_URL: http://localhost:8000  
+
+    # this is for docker compose watch mode
+    # anything mentioned under develop will be watched for changes by docker compose watch and it will perform the action mentioned
+    # ab yaha hum Docker-compose watch mode ko active kreinga.
+    develop:
+      # we specify the files to watch for changes
+      # under the 'watch' command jitnay be path hum define kreinga yeh unko watch krega.
+      watch:
+        # it'll watch for changes in package.json and package-lock.json and rebuild the container if there are any changes
+        - path: ./frontend/package.json # its means kay jab be package.json may kuch changes hongay toh jo uskay nichay action hai wo perform hojayega which is 'rebuild' the Image.
+          action: rebuild
+        - path: ./frontend/package-lock.json
+          action: rebuild
+        # it'll watch for changes in the frontend directory and sync the changes with the container real time
+        - path: ./frontend # jo uper path define kiya that is for those file which affect application at the time of building Image toh iss liya unkay against jo action be create kia hai wo yehi hai kay Image will be 'rebuild', but jo files build pa koi affect nhi dalti like your coding files usme jo be changes hongay toh at that time we dont want to create new Image, we want sync them with the coding files in container.
+          target: /app # its mean kay jo frontend ki directory may files hain wo container may jo working directory hai which is '/app' usme jakay store hongi.
+          action: sync # bcuz we want to do 'sync' therefore we define 'sync' action.
+
+  # define the api service/container
+  # it is also a container named as 'api'
+  api: 
+    # api service depends on the db service so the db service will be started before the api service
+    depends_on: 
+      - db
+
+    # specify the build context for the api service
+    build: ./backend
+    
+    # specify the ports to expose for the api service
+    # the first number is the port on the host machine
+    # the second number is the port inside the container
+    ports: 
+      - 8000:8000
+
+    # specify environment variables for the api service
+    # for demo purposes, we're using a local mongodb instance
+    environment: 
+      DB_URL: mongodb://db/anime
+    
+    # establish docker compose watch mode for the api service
+    develop:
+      # specify the files to watch for changes
+      watch:
+        # it'll watch for changes in package.json and package-lock.json and rebuild the container and image if there are any changes
+        - path: ./backend/package.json
+          action: rebuild
+        - path: ./backend/package-lock.json
+          action: rebuild
+        
+        # it'll watch for changes in the backend directory and sync the changes with the container real time
+        - path: ./backend
+          target: /app
+          action: sync
+
+  # define the db service
+  # it is a database container named as 'db'
+  db:
+    # specify the image to use for the db service from docker hub. If we have a custom image, we can specify that in this format
+    # In the above two services, we're using the build context to build the image for the service from the Dockerfile so we specify the image as "build: ./frontend" or "build: ./backend".
+    # but for the db service, we're using the image from docker hub so we specify the image as "image: mongo:latest"
+    # you can find the image name and tag for mongodb from docker hub here: https://hub.docker.com/_/mongo
+    # ab basically, in this 'db' service/container we are not building our own image, bcuz we have to use mongoDb so mongoDb Official Image is already present on Docker hub so why we create our own image for that. so we have just mention the name and tag of image infront of 'image' commandwhich,in our case we want 'mongo:latest' . NOw behind the it automatically check if we have this image downloaded on our local system so it will use from there, otherwise pull it from docker Hub. 
+    image: mongo:latest
+
+    # specify the ports to expose for the db service
+    # generally, we do this in api service using mongodb atlas. But for demo purposes, we're using a local mongodb instance
+    # usually, mongodb runs on port 27017. So we're exposing the port 27017 on the host machine and mapping it to the port 27017 inside the container
+    ports:
+      - 27017:27017
+
+    # specify the volumes to mount for the db service
+    # we're mounting the volume named "anime" inside the container at /data/db directory
+    # this is done so that the data inside the mongodb container is persisted even if the container is stopped
+    # In short, basic yeh jo 'anime' volume create kia hai yeh mainly humaray local system pa hi exist krega jisko Docker manage krega, but yeh jo 'anime:/data/db' iska mtlb hai hum jo 'anime' volume usko container mabi mount kr rhay hain but ab mounting ka mtlb yeh nhi kay haka ab anime ka folder hai wo '/data/db/anime' iss tarah say create hojayega NO. iska mtlb haka ab Docker yeh krega kay jitna data '/data/db' iss path/directory may store hota hai wo 'anime' volume mabi store hoga, taka in future agar incase container crash hojaye ya delete hojaye toh jo 'anime' volume hai which is mainly exist on our local machine waha par wo save/persist rahega. for more check notes of this project. 
+    volumes:
+      - anime:/data/db
+
+# define the volumes to be used by the services, yeh basic wo volume hai jo Sab services/containers use kreingay.
+# Ab basic yaha jo hum 'volumes' ki command use kr rhay hain toh it represents the global volume jiska mtlb yeh haka jo basically uper hum 'db' service may volume create kia hai which is 'anime' so as we know kay yeh jo volume hai yeh koi container may isolated nhi hai blka humari local machine pa Exist krta hai and it is managed by Docker. so ab let suppose agar 'api' service/container ko data chaiya toh as we know kay jitna be database may data hai that is storing in 'anime' volume. toh 'api' service be easily 'anime' volume say data fetch krskti hai and isi lia humna 'anime' volume ko globally be define krdia takay agr kisi be service/container ko data chaiya within this app so it can easily fetch through 'anime' volume.  
+volumes:
+  anime:

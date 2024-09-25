@@ -1,0 +1,34 @@
+What is RPA(Robotic Process Automation)?
+Plugins in Chatgpt ?
+Image generation by Dall-e and mid-journey.
+---
+1- Why AI ?
+2- incentives 
+3- 
+3- then intro to AI, ML, DL.
+4- Course Outline
+----
+Pandas
+numpy
+matplot
+Scipy
+----
+keras
+pytorch
+tensorflow
+
+All are python libraries for deep learning and neural network.
+----
+LAngchain
+FastAPI
+
+these both above are technology to interacting with AI model.
+----------------
+ORM
+GraphQl
+
+---------------
+cognintive theory
+
+
+
